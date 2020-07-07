@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ecommerce.Model.Users;
@@ -30,6 +31,7 @@ public class LoginActivity extends AppCompatActivity {
     private Button LoginButton;
     private ProgressDialog loadingBar;
     private String parentDbName = "Users";
+    private TextView AdminLink, NotAdminLink;
     private CheckBox chkBoxRememberMe;
 
 
@@ -43,6 +45,9 @@ public class LoginActivity extends AppCompatActivity {
         InputPhoneNumber = (EditText) findViewById(R.id.login_phone_number_input);
         loadingBar = new ProgressDialog(this);
 
+        AdminLink = (TextView) findViewById(R.id.admin_panel_link);
+        NotAdminLink = (TextView) findViewById(R.id.not_admin_panel_link);
+
         chkBoxRememberMe = (CheckBox) findViewById(R.id.remind_me_chkb);
         Paper.init(this);
 
@@ -53,6 +58,27 @@ public class LoginActivity extends AppCompatActivity {
                 LoginUser();
             }
         });
+
+        AdminLink.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LoginButton.setText("LoginAdmin");
+                AdminLink.setVisibility(View.INVISIBLE);
+                NotAdminLink.setVisibility(View.VISIBLE);
+                parentDbName = "Admins";
+            }
+        });
+        NotAdminLink.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                LoginButton.setText("Login");
+                AdminLink.setVisibility(View.VISIBLE);
+                NotAdminLink.setVisibility(View.INVISIBLE);
+                parentDbName = "Users";
+            }
+        });
+
     }
     private void LoginUser()
     {
@@ -103,14 +129,22 @@ public class LoginActivity extends AppCompatActivity {
                     {
                         if (usersData.getPassword().equals(password))
                         {
-                             if (parentDbName.equals("Users"))
-                            {
-                                Toast.makeText(LoginActivity.this, "logged in Successfully...", Toast.LENGTH_SHORT).show();
-                                loadingBar.dismiss();
+                             if(parentDbName.equals("Admins"))
+                             {
+                                 Toast.makeText(LoginActivity.this, "logged in Successfully...", Toast.LENGTH_SHORT).show();
+                                 loadingBar.dismiss();
 
-                                Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
-                                startActivity(intent);
-                            }
+                                 Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+                                 startActivity(intent);
+                             }
+                             else if (parentDbName.equals("Users"))
+                             {
+                                     Toast.makeText(LoginActivity.this, "logged in Successfully...", Toast.LENGTH_SHORT).show();
+                                     loadingBar.dismiss();
+
+                                     Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+                                     startActivity(intent);
+                             }
                         }
                         else
                         {
